@@ -36,6 +36,41 @@ const toyCollection = client.db('toyWorld').collection('allToys');
 const addToyCollection = client.db('toyWorld').collection('addNew')
 
 
+const indexKeys = { name: 1, category: 1 }; 
+const indexOptions = { name: "nameCategory" }; 
+
+const result = await toyCollection.createIndex(indexKeys, indexOptions);
+
+app.get('/toySearchByName/:text', async(req, res) => {
+    const searchText = req.params.text;
+
+
+    const result = await toyCollection.find({
+        $or: [
+            {name: {$regex: searchText, options: 'i'}},
+            {category: {$regex: searchText, options: 'i'}},
+        ],
+    })
+    .toArray();
+    res.send(result);
+   
+})
+
+
+
+
+
+
+// app.get('/allToys/:text', async(req, res) => {
+//     console.log(req.params.text);
+//     if(req.params.text == "Bus" || req.params.text == "truck" || req.params.text == "car"){
+//         const result = toyCollection.find({category: req.params.text}).toArray();
+//         return res.send(result);
+//     }
+//     // const result = toyCollection.findOne().toArray();
+//     // res.send(result);
+// })
+
 
 app.get('/allToys', async(req, res) => {
     const cursor = toyCollection.find();
@@ -70,6 +105,39 @@ app.post('/addNew', async(req, res) => {
 app.get('/addNew', async(req, res) => {
     const cursor = addToyCollection.find();
     const result = await cursor.toArray();
+    res.send(result);
+})
+
+
+app.get('/addNew/:id', async(req, res) => {
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id)}
+    const result = await addToyCollection.findOne(query);
+    res.send(result)
+})
+
+
+app.put('/addNew/:id', async(req, res) => {
+    const id = req.params.id;
+    const filter = {_id: new ObjectId(id)}
+    const options = {upsert: true}
+    const updatedToy = req.body;
+    const Toy = {
+        $set: {
+            price: updatedToy.price,
+            quantity: updatedToy.quantity,
+            description: updatedToy.description
+        }
+    }
+    const result = await addToyCollection.updateOne(filter, Toy, options);
+    res.send(result);
+})
+
+
+app.delete('/addNew/:id', async(req, res) => {
+    const id = req.params.id;
+    const query = {_id: new ObjectId(id)}
+    const result = await addToyCollection.deleteOne(query);
     res.send(result);
 })
 
