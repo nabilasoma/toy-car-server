@@ -29,27 +29,27 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
 
 const toyCollection = client.db('toyWorld').collection('allToys');
 const addToyCollection = client.db('toyWorld').collection('addNew')
 
 
-const indexKeys = { name: 1, category: 1 }; 
-const indexOptions = { name: "nameCategory" }; 
+// const indexKeys = { name: 1, category: 1 }; 
+// const indexOptions = { name: "nameCategory" }; 
 
-const result = await toyCollection.createIndex(indexKeys, indexOptions);
+// const result = await toyCollection.createIndex(indexKeys, indexOptions);
 
 app.get('/toySearchByName/:text', async(req, res) => {
     const searchText = req.params.text;
 
 
     const result = await toyCollection.find({
-        $or: [
-            {name: {$regex: searchText, options: 'i'}},
-            {category: {$regex: searchText, options: 'i'}},
-        ],
+        // $or: [
+        //     {name: {$regex: searchText, options: 'i'}},
+        //     {category: {$regex: searchText, options: 'i'}},
+        // ],
     })
     .toArray();
     res.send(result);
@@ -58,18 +58,6 @@ app.get('/toySearchByName/:text', async(req, res) => {
 
 
 
-
-
-
-// app.get('/allToys/:text', async(req, res) => {
-//     console.log(req.params.text);
-//     if(req.params.text == "Bus" || req.params.text == "truck" || req.params.text == "car"){
-//         const result = toyCollection.find({category: req.params.text}).toArray();
-//         return res.send(result);
-//     }
-//     // const result = toyCollection.findOne().toArray();
-//     // res.send(result);
-// })
 
 
 app.get('/allToys', async(req, res) => {
@@ -143,8 +131,8 @@ app.delete('/addNew/:id', async(req, res) => {
 
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
-    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+    // await client.db("admin").command({ ping: 1 });
+    // console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
     // await client.close();
