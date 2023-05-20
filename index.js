@@ -147,8 +147,13 @@ app.get('/', (req, res) => {
     res.send('Toy Car is running')
 })
 
+// app.listen(port, () => {
+//     console.log(`Toy Car is running on port: ${port}`)
+// })
+
+
 app.listen(port, () => {
-    console.log(`Toy Car is running on port: ${port}`)
+    console.log(`port is running on port: ${port}`)
 })
 
 
